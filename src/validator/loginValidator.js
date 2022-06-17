@@ -15,3 +15,5 @@ const loginValidator = () => {
 }
 
 module.exports = loginValidator
+
+
