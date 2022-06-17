@@ -23,7 +23,7 @@ app.use('/api/', routes)
       )
   } catch (error) {
     console.log(error)
-    console.log(`An error is happening with DB URL connection string......`)
+    console.log(`An error is happening with DB URL connection string`)
     process.exit(1)
   }
 })()
