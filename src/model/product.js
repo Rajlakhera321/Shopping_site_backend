@@ -1,31 +1,33 @@
-const {Schema, model} = require("mongoose");
+const { Schema, model } = require("mongoose");
 
-const productSchema = new Schema({
+const productSchema = new Schema(
+  {
     title: {
-        type: Schema.Types.String,
-        required: true
+      type: Schema.Types.String,
     },
     description: {
-        type: Schema.Types.String,
-        required: true
+      type: Schema.Types.String,
     },
     image: {
-        type: Schema.Types.String,
-        required: true
+      type: Schema.Types.String,
+    },
+    inStock: {
+      type: Schema.Types.Boolean,
     },
     categories: {
-        type: Schema.Types.Array
+      type: Schema.Types.Array,
     },
     size: {
-        type: Schema.Types.String
+      type: Schema.Types.Array,
     },
     color: {
-        type: Schema.Types.Array
+      type: Schema.Types.Array,
     },
     price: {
-        type: Schema.Types.Number,
-        required: true
-    }
-},{timestamps: true})
+      type: Schema.Types.Number,
+    },
+  },
+  { timestamps: true }
+);
 
-module.exports = model("product", productSchema)
+module.exports = model("product", productSchema);

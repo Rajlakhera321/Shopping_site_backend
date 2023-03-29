@@ -1,59 +1,79 @@
-const {productModel} = require("../model");
+const { productModel } = require("../model");
 
 const addProduct = async (req, res) => {
-    const { title, description, image, categories, color, size, price } = req.body
-    try {
-        const add = await productModel.create({
-            title,
-            description,
-            image,
-            categories,
-            color,
-            size,
-            price
-        });
-        res.status(200).json({ message: "Product added successfully" })
-    } catch (error) {
-        res.status(400).json({ error })
-        console.log(error)
-    }
-}
+  try {
+    const { title, description, categories, color, size, price } = req.body;
+    const fileData = req.file;
+    console.log(fileData);
+    const add = await productModel.create({
+      title,
+      description,
+      image: fileData?.filename,
+      categories: JSON.parse(categories),
+      color: JSON.parse(color),
+      size: JSON.parse(size),
+      price,
+      inStock: true,
+    });
+    res.status(200).json({ message: "Product added successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ error });
+  }
+};
 
 const updateProduct = async (req, res) => {
-    try {
-        const { id } = req.params
-        const checkId = await productModel.findById(id)
-        if (!checkId) {
-            res.status(400).json({ message: "Product Doesn't exist, Invalid id" })
-        } else {
-            await productModel.updateOne({ _id: id }, { $set: req.body }, { new: true })
-            res.status(201).json({ message: "Product updated successfully" })
-        }
-
-    } catch (error) {
-        res.status(400).send(error)
-        console.log(error)
+  try {
+    const { id } = req.params;
+    const checkId = await productModel.findById(id);
+    if (!checkId) {
+      res.status(400).json({ message: "Product Doesn't exist, Invalid id" });
+    } else {
+      await productModel.updateOne(
+        { _id: id },
+        { $set: req.body },
+        { new: true }
+      );
+      res.status(201).json({ message: "Product updated successfully" });
     }
-}
+  } catch (error) {
+    res.status(400).send(error);
+    console.log(error);
+  }
+};
 
 const deleteProduct = async (req, res) => {
-    try {
-        const { id } = req.params
-        const checkId = await productModel.findById(id)
-        if (!checkId) {
-            res.status(400).json({ message: "Product Doesn't exist, Invalid id" })
-        } else {
-            await productModel.deleteOne({ _id: id })
-            res.status(201).json({ message: "Product Deleted successfully" })
-        }
-    } catch (error) {
-        res.status(400).send(error)
-        console.log(error)
+  try {
+    const { id } = req.params;
+    const checkId = await productModel.findById(id);
+    if (!checkId) {
+      res.status(400).json({ message: "Product Doesn't exist, Invalid id" });
+    } else {
+      await productModel.deleteOne({ _id: id });
+      res.status(201).json({ message: "Product Deleted successfully" });
     }
-}
+  } catch (error) {
+    res.status(400).send(error);
+    console.log(error);
+  }
+};
+
+const getProducts = async (req, res) => {
+  try {
+    const { category } = req.query;
+    const data = await productModel.find({
+      inStock: true,
+      categories: { $in: [category] },
+    });
+    return res.status(200).json({ message: data });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 module.exports = {
-    addProduct,
-    updateProduct,
-    deleteProduct
-}
+  addProduct,
+  updateProduct,
+  deleteProduct,
+  getProducts,
+};
