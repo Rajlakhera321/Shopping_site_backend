@@ -4,11 +4,10 @@ const addProduct = async (req, res) => {
   try {
     const { title, description, categories, color, size, price } = req.body;
     const fileData = req.file;
-    console.log(fileData);
     const add = await productModel.create({
       title,
       description,
-      image: fileData?.filename,
+      image: fileData?.originalname,
       categories: JSON.parse(categories),
       color: JSON.parse(color),
       size: JSON.parse(size),
@@ -18,7 +17,7 @@ const addProduct = async (req, res) => {
     res.status(200).json({ message: "Product added successfully" });
   } catch (error) {
     console.log(error);
-    res.status(400).json({ error });
+    res.status(400).json({message: "Internal Server Error"});
   }
 };
 
@@ -61,10 +60,14 @@ const deleteProduct = async (req, res) => {
 const getProducts = async (req, res) => {
   try {
     const { category } = req.query;
-    const data = await productModel.find({
-      inStock: true,
-      categories: { $in: [category] },
-    });
+    if (category) {
+      var data = await productModel.find({
+        inStock: true,
+        categories: category ? { $in: [category] } : "",
+      });
+    } else {
+      var data = await productModel.find({ inStock: true });
+    }
     return res.status(200).json({ message: data });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
