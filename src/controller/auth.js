@@ -12,7 +12,6 @@ const signUp = async (req, res) => {
             password: req.body.password,
             isAdmin: req.body.isAdmin
         }
-        console.log(user, "salfjkasdfl")
         const a = await userModel.create(user);
         res.json({
             message: "SignUp Successfully"

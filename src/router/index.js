@@ -7,6 +7,8 @@ router.use("/cart",require("./cart"))
 
 router.use("/order",require("./order"))
 
-router.use("/product",require("./product"))
+router.use("/products",require("./product"))
+
+router.use("/checkout", require("./stripe"))
 
 module.exports = router
