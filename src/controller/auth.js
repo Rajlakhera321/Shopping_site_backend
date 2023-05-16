@@ -5,6 +5,10 @@ const jwt = require("jsonwebtoken")
 const signUp = async (req, res) => {
     try {
         const {password} = req.body
+        const data = await userModel.find({email: req.body.email})
+        if(data){
+            return res.status(400).json({message: "Data already found"})
+        }
         req.body.password = await bcrypt.hash(password.toString(), 10)
         const user = {
             userName: req.body.userName,
@@ -12,13 +16,12 @@ const signUp = async (req, res) => {
             password: req.body.password,
             isAdmin: req.body.isAdmin
         }
-        const a = await userModel.create(user);
+        await userModel.create(user);
         res.json({
             message: "SignUp Successfully"
         })
     } catch (error) {
         res.status(401).send(error);
-        console.log(error,"adlasfjosadfjowelfjwof")
     }
 }
 
@@ -48,7 +51,6 @@ const login = async (req, res) => {
             }
         }
     } catch (error) {
-        console.log("error-------", error)
         return res.status(500).json({ message: 'something went wrong' })
     }
 }
