@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken")
 const signUp = async (req, res) => {
     try {
         const {password} = req.body
-        const data = await userModel.find({email: req.body.email})
+        const data = await userModel.findOne({email: req.body.email})
         if(data){
             return res.status(400).json({message: "Data already found"})
         }
